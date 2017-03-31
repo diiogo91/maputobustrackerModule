@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/llContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:focusable="false"
+    android:weightSum="1"
+    tools:context=".MapsActivity"
+    app:layout_collapseParallaxMultiplier="1.0">
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="85dp"
+        android:background="@android:color/holo_orange_light">
+
+        <ProgressBar
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/ProgressRegDevice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone" />
+        <ImageView
+            android:id="@+id/ivSliderArrow"
+            android:layout_height="54dp"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/accept"
+            android:background="@mipmap/gps2"
+            android:layout_width="60dp"
+            android:layout_marginStart="19dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Serviço de Localização"
+            android:background="@android:color/holo_orange_light"
+            android:id="@+id/textView18"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/ivSliderArrow" />
+
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/menuItens"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/textView18"
+        android:layout_alignStart="@+id/ProgressRegDevice"
+        android:fillViewport="true">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/textView9" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="ID do dispositivo"
+                android:background="#ffc"
+                android:id="@+id/textView14"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="00000000"
+                android:id="@+id/txtIMEI"
+                android:textSize="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Associar Autocarro disponível"
+                android:background="#ffc"
+                android:id="@+id/textView15"
+                android:textSize="15dp" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spAutocarros"
+                android:spinnerMode="dropdown" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Associar"
+                android:theme="@style/btnblue"
+                android:id="@+id/btnAssociar" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Especificar Rota de Operação"
+                android:background="#ffc"
+                android:id="@+id/textView16"
+                android:textSize="15dp" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spRotas"
+                android:spinnerMode="dropdown" />
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Especifcar Ponto de Orgiem e Destino"
+                android:id="@+id/swtEspecificar"
+                android:checked="false"
+                android:background="#ffc" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Ponto de Origem"
+                android:background="#ffc"
+                android:id="@+id/textView22"
+                android:textSize="15dp" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spOrigem"
+                android:spinnerMode="dropdown" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Ponto de destino"
+                android:background="#ffc"
+                android:id="@+id/textView24"
+                android:textSize="15dp" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spDestino"
+                android:spinnerMode="dropdown" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Iniciar Serviço"
+                android:theme="@style/btnblue"
+                android:id="@+id/btnIniciar" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Redefinir"
+                android:theme="@style/btngreen"
+                android:id="@+id/btnRedefinir" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Parar Serviço"
+                android:theme="@style/btnRed"
+                android:id="@+id/btnPararServiço" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Visualizar Status"
+                android:id="@+id/btnVisualizarStatus"
+                android:layout_alignBottom="@+id/menuItens"
+                android:theme="@style/btnyellow"
+                android:layout_alignStart="@+id/menuItens"
+                android:layout_alignEnd="@+id/menuItens"
+                android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/header4"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+<fragment
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:id="@+id/map"
+    tools:context=".MapsActivity"
+    android:name="com.google.android.gms.maps.SupportMapFragment"
+    >
+</fragment>
+    <ProgressBar
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/maps_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+<LinearLayout
+android:id="@+id/header"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:layout_alignParentTop="true"
+    android:orientation="vertical"
+    >
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Próximo destino: Sem destino "
+    android:gravity="left"
+    android:id="@+id/txtProximaParageminfo"
+    android:textColor="#000"
+    android:textSize="12dp"
+    android:background="@android:color/holo_orange_light" />
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Distância a percorrer: a determinar "
+    android:gravity="left"
+    android:id="@+id/txtKmapercorrer"
+    android:textColor="#000"
+    android:textSize="12dp"
+    android:background="@android:color/holo_orange_light"
+    />
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Distância percorrida: a determinar "
+    android:gravity="left"
+    android:id="@+id/txtKmpercorridos"
+    android:textColor="#000"
+    android:textSize="12dp"
+    android:background="@android:color/holo_orange_light"
+    />
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Tempo Estimado de Chegada a ser determinado "
+    android:gravity="left"
+    android:id="@+id/txtTempoEstimado"
+    android:textColor="#000"
+    android:textSize="12dp"
+    android:background="@android:color/holo_orange_light"
+    />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chegou ao destino: a determinar "
+        android:gravity="left"
+        android:id="@+id/txtChegoudestino"
+        android:textColor="#000"
+        android:textSize="12dp"
+        android:background="@android:color/holo_orange_light"
+        />
+</LinearLayout>
+</RelativeLayout>
