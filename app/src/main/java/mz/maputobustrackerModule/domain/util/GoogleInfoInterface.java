@@ -49,7 +49,7 @@ public class GoogleInfoInterface {
         StringBuilder urlString = new StringBuilder();
         if(mode == null)
             mode = "driving";
-        urlString.append("http://maps.googleapis.com/maps/api/directions/json");
+        urlString.append("https://maps.googleapis.com/maps/api/directions/json");
         urlString.append("?origin=");// from
         urlString.append( points.get(0).latitude);
         urlString.append(',');
@@ -71,7 +71,7 @@ public class GoogleInfoInterface {
             urlString.append(',');
             urlString.append(points.get(i).longitude);
         }
-        urlString.append("&sensor=true&mode="+mode);
+        urlString.append("&sensor=true&mode="+mode+"&key=AIzaSyDflvraodkhbj9_wV8kttvyLcBTMozL9rE");
         return urlString.toString();
     }
 
@@ -81,7 +81,7 @@ public class GoogleInfoInterface {
         if(mode == null)
             mode = "driving";
 
-        urlString.append("http://maps.googleapis.com/maps/api/directions/json");
+        urlString.append("https://maps.googleapis.com/maps/api/directions/json");
         urlString.append("?origin=");// from
         urlString.append(Double.toString(sourcelat));
         urlString.append(",");
@@ -93,7 +93,7 @@ public class GoogleInfoInterface {
         urlString.append(",");
         urlString.append(Double.toString( destlog));
         String lang = "portuguese";
-        urlString.append("&sensor=false&mode="+mode+"&alternatives=true&language="+lang);
+        urlString.append("&sensor=false&mode="+mode+"&alternatives=true&language="+lang+"&key=AIzaSyDflvraodkhbj9_wV8kttvyLcBTMozL9rE");
         return urlString.toString();
     }
 
@@ -176,7 +176,7 @@ public class GoogleInfoInterface {
                 }
                 else if(minutos==null)
                 {
-                    show="a ser determinado no momento pelo sistema.";
+                    show="a determinar";
                 }
                 else {
                     show ="de "+minutos.intValue()+" minutos";
@@ -186,7 +186,7 @@ public class GoogleInfoInterface {
             MapsActivity.vg.setTempoReal(minutos);
         }else
             {
-                MapsActivity.vg.setTempoEstChgada("a ser determinado no momento pelo sistema.");
+                MapsActivity.vg.setTempoEstChgada("a determinar.");
                 MapsActivity.vg.setTempoReal(0.0);
 
             }
@@ -225,12 +225,12 @@ public class GoogleInfoInterface {
             Double minutos = 0.0;
             if (stepsArray != null) {
                 if (stepsArray.length() == 0) {
-                    MapsActivity.snackbar = TSnackbar.make(MapsActivity.progressBar, "A determinar distancia. ", TSnackbar.LENGTH_LONG);
+                    MapsActivity.snackbar = TSnackbar.make(MapsActivity.progressBar, "A determinar distância. ", TSnackbar.LENGTH_LONG);
                     View snackBarView = MapsActivity.snackbar.getView();
                     snackBarView.setBackgroundColor(Color.parseColor("#f44336")); // snackbar background color
                     MapsActivity.snackbar.setActionTextColor(Color.parseColor("#FFFFEE19")); // snackbar action text color
                     MapsActivity.snackbar.show();
-                    show = "a ser determinado no momento pelo sistema.";
+                    show = "a determinar";
                 } else {
                     if (distanciaM.equals("maxima")) {
                         MapsActivity.distanciaMaxima = Double.parseDouble(leg.distanceValue) * 0.001;

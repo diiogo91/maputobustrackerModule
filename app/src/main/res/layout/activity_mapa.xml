@@ -28,6 +28,15 @@ android:layout_height="wrap_content"
 android:layout_alignParentTop="true"
     android:orientation="vertical"
     >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Data e Hora: a determinar "
+        android:gravity="left"
+        android:id="@+id/txtdataHora"
+        android:textColor="#000"
+        android:textSize="14dp"
+        android:background="@android:color/holo_orange_light" />
 <TextView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -35,7 +44,7 @@ android:layout_alignParentTop="true"
     android:gravity="left"
     android:id="@+id/txtProximaParageminfo"
     android:textColor="#000"
-    android:textSize="12dp"
+    android:textSize="14dp"
     android:background="@android:color/holo_orange_light" />
 <TextView
     android:layout_width="match_parent"
@@ -44,7 +53,7 @@ android:layout_alignParentTop="true"
     android:gravity="left"
     android:id="@+id/txtKmapercorrer"
     android:textColor="#000"
-    android:textSize="12dp"
+    android:textSize="14dp"
     android:background="@android:color/holo_orange_light"
     />
 <TextView
@@ -54,19 +63,19 @@ android:layout_alignParentTop="true"
     android:gravity="left"
     android:id="@+id/txtKmpercorridos"
     android:textColor="#000"
-    android:textSize="12dp"
+    android:textSize="14dp"
     android:background="@android:color/holo_orange_light"
     />
-<TextView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Tempo Estimado de Chegada a ser determinado "
-    android:gravity="left"
-    android:id="@+id/txtTempoEstimado"
-    android:textColor="#000"
-    android:textSize="12dp"
-    android:background="@android:color/holo_orange_light"
-    />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Distância percorrida: a determinar "
+        android:gravity="left"
+        android:id="@+id/txtVelocidadedoautocarro"
+        android:textColor="#000"
+        android:textSize="14dp"
+        android:background="@android:color/holo_orange_light"
+        />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -74,7 +83,27 @@ android:layout_alignParentTop="true"
         android:gravity="left"
         android:id="@+id/txtChegoudestino"
         android:textColor="#000"
-        android:textSize="12dp"
+        android:textSize="14dp"
+        android:background="@android:color/holo_orange_light"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Disponibilidade: a determinar "
+        android:gravity="left"
+        android:id="@+id/txtDisponibilidade"
+        android:textColor="#000"
+        android:textSize="14dp"
+        android:background="@android:color/holo_orange_light"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tempo Estimado de Chegada: a determinar "
+        android:gravity="left"
+        android:id="@+id/txtTempoEstimado"
+        android:textColor="#000"
+        android:textSize="14dp"
         android:background="@android:color/holo_orange_light"
         />
 </LinearLayout>

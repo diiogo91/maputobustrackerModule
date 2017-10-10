@@ -75,7 +75,7 @@ public class MakeRoute {
         if(mode == null)
             mode = "driving";
 
-        urlString.append("http://maps.googleapis.com/maps/api/directions/json");
+        urlString.append("https://maps.googleapis.com/maps/api/directions/json");
         urlString.append("?origin=");// from
         urlString.append( points.get(0).latitude);
         urlString.append(',');
@@ -101,7 +101,7 @@ public class MakeRoute {
         }
 
 
-        urlString.append("&sensor=true&mode="+mode);
+        urlString.append("&sensor=true&mode="+mode+"&key=AIzaSyDflvraodkhbj9_wV8kttvyLcBTMozL9rE");
 
 
         return urlString.toString();
@@ -113,7 +113,7 @@ public class MakeRoute {
         if(mode == null)
             mode = "driving";
 
-        urlString.append("http://maps.googleapis.com/maps/api/directions/json");
+        urlString.append("https://maps.googleapis.com/maps/api/directions/json");
         urlString.append("?origin=");// from
         urlString.append(Double.toString(sourcelat));
         urlString.append(",");
@@ -124,7 +124,7 @@ public class MakeRoute {
                 .append(Double.toString( destlat));
         urlString.append(",");
         urlString.append(Double.toString( destlog));
-        urlString.append("&sensor=false&mode="+mode+"&alternatives=true&language="+lang);
+        urlString.append("&sensor=false&mode="+mode+"&alternatives=true&language="+lang+"&key=AIzaSyDflvraodkhbj9_wV8kttvyLcBTMozL9rE");
         return urlString.toString();
     }
 

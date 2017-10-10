@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -59,7 +60,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +70,7 @@ import java.util.Map;
 import mz.maputobustrackerModule.adapter.UserRecyclerAdapter;
 import mz.maputobustrackerModule.domain.Associacao;
 import mz.maputobustrackerModule.domain.Autocarro;
+import mz.maputobustrackerModule.domain.Notificacao;
 import mz.maputobustrackerModule.domain.Ponto;
 import mz.maputobustrackerModule.domain.Rota;
 import mz.maputobustrackerModule.domain.Tripulante;
@@ -101,6 +105,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<Autocarro> autocarros;
     private Autocarro autocarro;
     public static Viagem vg;
+    private boolean chek=false;
     private LatLng origeml;
     private LatLng destinol;
     //Auoutcarros
@@ -142,6 +147,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Associacao associacao;
     public static ProgressBar progressBar;
     private Switch swtEspecificar;
+    private Switch swtDisponibilidade;
     public static Double distanciaMaxima;
     public static Double distanciaminima;
     public static Double tempoEstimado;
@@ -196,6 +202,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static TextView txtKmpercorridos;
     public static TextView txtTempoEstimado;
     public static TextView txtChegoudestino;
+    public static TextView txtDisponibilidade;
+    public static TextView txtVelocidadedoautocarro;
+    public static TextView txtdataHora;
+
+    private Notificacao notificacao;
+    private Button disponivel;
+    private Button indisponivel;
+    private Boolean disponibilidade = true;
+    private String infoDisponibilidade = "Autocarro está disponível. A determinar a rota de circulação...";
+    private Rota rota2;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -235,6 +251,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnAssociar = (Button) findViewById(R.id.btnAssociar);
         btnVisualizarStatus = (Button) findViewById(R.id.btnVisualizarStatus);
         btnParar =(Button) findViewById(R.id.btnPararServiço);
+        disponivel = (Button) findViewById(R.id.btnDisponivel);
+        indisponivel = (Button) findViewById(R.id.btnIndisponivel);
+        disponivel.setEnabled(false);
+        indisponivel.setEnabled(false);
 
         btnAssociar.setText("Associar");
 
@@ -291,8 +311,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         txtKmapercorrer=(TextView) findViewById(R.id.txtKmapercorrer);
         txtKmpercorridos=(TextView) findViewById(R.id.txtKmpercorridos);
         txtTempoEstimado=(TextView) findViewById(R.id.txtTempoEstimado);
+        txtDisponibilidade = (TextView) findViewById(R.id.txtDisponibilidade);
+        txtVelocidadedoautocarro= (TextView) findViewById(R.id.txtVelocidadedoautocarro);
         txtProximaParageminfo = (TextView) findViewById(R.id.txtProximaParageminfo);
         txtChegoudestino= (TextView) findViewById(R.id.txtChegoudestino);
+        txtdataHora= (TextView) findViewById(R.id.txtdataHora);
         mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         mLayout.requestLayout(); // call requestLayout before expandPanel
         mLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
@@ -449,6 +472,129 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
+
+        disponivel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(vg != null && iniciouServico == true){
+                    rota2 = new Rota();
+                    LibraryClass.getFirebase().child("Rotas").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                                Rota post = postSnapshot.getValue(Rota.class);
+                                if(post.getId() == vg.getCod_rota())
+                                {
+                                    rota2=post;
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError firebaseError) {
+                            System.out.println("The read failed: " + firebaseError.getMessage());
+                        }
+                    });
+                infoDisponibilidade ="O "+selectedAutocarro.getNome()+" já está disponível. A determinar a rota de circulação...";
+                    disponivel.setEnabled(false);
+                    indisponivel.setEnabled(true);
+                }
+                else
+                {
+                    if(selectedAutocarro.getNome() != null) {
+                        infoDisponibilidade = "O " + selectedAutocarro.getNome() + " está disponível. A determinar rota a circular...";
+                        disponivel.setEnabled(false);
+                        indisponivel.setEnabled(true);
+                    }else
+                    {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                        String mensagem = "Para poder alterar a disponibilidade do Autocarro tem que ter associado o Autocarro em causa ao dispositivo de Localização!";
+                        builder.setMessage(mensagem)
+                                .setCancelable(true)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                    }
+                }
+                vg.setInfoDisponibilidade(infoDisponibilidade);
+                vg.setDisponibilidade(true);
+                LibraryClass.getFirebase().child("Viagens").child(selectedAutocarro.getId()).setValue(vg);
+            }
+
+        });
+        indisponivel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                if (iniciouServico == false) {
+                    String mensagem = "Para poder alterar a disponibilidade do Autocarro tem que ter iniciado o serviço de Localização!";
+                    builder.setMessage(mensagem)
+                            .setCancelable(true)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                } else {
+                    rota2 = new Rota();
+                    LibraryClass.getFirebase().child("Rotas").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                                Rota post = postSnapshot.getValue(Rota.class);
+                                if(post.getId() == vg.getCod_rota())
+                                {
+                                    rota2=post;
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError firebaseError) {
+                            System.out.println("The read failed: " + firebaseError.getMessage());
+                        }
+                    });
+                    String mensagem = "Por Favor, Seleccione a causa da alteração da disponibilidade do Autocarro:";
+                    builder.setMessage(mensagem)
+                            .setCancelable(true)
+                            .setNeutralButton("Cancelar", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                }
+                            })
+                            .setPositiveButton("Avaria", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                        infoDisponibilidade ="O " + selectedAutocarro.getNome() + " sofreu uma avaria no caminho da paragem "+vg.getProximaParagem() +", na rota "+ rota2.getName()+".";
+                                        vg.setInfoDisponibilidade(infoDisponibilidade);
+                                        vg.setTempoEstChgada("inderteminado.");
+                                        vg.setDisponibilidade(false);
+                                        LibraryClass.getFirebase().child("Viagens").child(selectedAutocarro.getId()).setValue(vg);
+                                        disponivel.setEnabled(true);
+                                        indisponivel.setEnabled(false);
+                                }
+                            })
+                            .setNegativeButton("Sinistro", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                    infoDisponibilidade ="O " + selectedAutocarro.getNome() + " sofreu uma sinistro no caminho da paragem "+vg.getProximaParagem() +", na rota "+ rota2.getName()+".";
+                                    vg.setInfoDisponibilidade(infoDisponibilidade);
+                                    vg.setTempoEstChgada("inderteminado.");
+                                    vg.setDisponibilidade(false);
+                                    LibraryClass.getFirebase().child("Viagens").child(selectedAutocarro.getId()).setValue(vg);
+                                    disponivel.setEnabled(true);
+                                    indisponivel.setEnabled(false);
+                                }
+                            });
+                    handler.removeCallbacks(timerRunnable);
+                }
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
+
         spOrigem.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -541,6 +687,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     btnIniciar.setEnabled(true);
                     spRotas.setEnabled(true);
                     btnAssociar.setText("Desassociar");
+
                 }
                 else if (mapaAssociacoes.get(getIMEI()) == null)
                 {
@@ -686,7 +833,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         txtKmapercorrer.setText("Distância a percorrer: a determinar");
         txtChegoudestino.setText("Chegou ao destino: a determinar");
         txtProximaParageminfo.setText("Próxima Paragem: a determinar");
-        txtTempoEstimado.setText("Tempo Estimado de Chegada a ser determinado ");
+        txtTempoEstimado.setText("Tempo Estimado de Chegada a paragem: a determinar ");
+        txtDisponibilidade.setText("Disponibilidade: a determinar");
+        txtVelocidadedoautocarro.setText("Velocidade: a determinar");
+        txtdataHora.setText("Data e Hora: a determinar");
+
         firstTime = true;
         origem = null;
         destino = null;
@@ -815,15 +966,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         mapaAutocarros.get(post.getCod_autocarro()).setPosition(newPosition);
                         txtKmpercorridos.setText(post.getKmpercorridos());
                         txtKmapercorrer.setText(post.getKmapercorrer());
+                        txtVelocidadedoautocarro.setText("Velocidade: "+post.getVelocidade());
+                        txtDisponibilidade.setText("Disponibilidade: "+post.getInfoDisponibilidade());
+                        txtdataHora.setText("Data e Hora: "+post.getDataHora());
                         if(post.getChegouDestino() == true)
                         {
                             txtChegoudestino.setText("Chegou ao destino: Sim");
+                            txtChegoudestino.setBackgroundColor(Color.RED);
+                            txtTempoEstimado.setVisibility(View.INVISIBLE);
                         }
                         else if(post.getChegouDestino() == false)
                         {
                             txtChegoudestino.setText("Chegou ao destino: Não");
+                            txtTempoEstimado.setVisibility(View.VISIBLE);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                txtChegoudestino.setBackgroundColor(getColor(R.color.holo_orange_light));
+                            }
+                            else
+                            {
+                                txtChegoudestino.setBackgroundColor(getResources().getColor(R.color.holo_orange_light));
+                            }
                         }
-
                         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newPosition, INITIAL_ZOOM_LEVEL));
                         CameraPosition cameraPosition = new CameraPosition.Builder()
                                 .target(newPosition)
@@ -833,7 +996,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                         progressBar = (ProgressBar) findViewById(R.id.maps_progress);
                         txtProximaParageminfo.setText("Próxima Paragem: "+post.getProximaParagem());
-                        txtTempoEstimado.setText("Tempo Estimado de Chagada "+post.getTempoEstChgada());
+                        txtTempoEstimado.setText("Tempo Estimado de Chagada a paragem: "+post.getTempoEstChgada());
                         if (post.getChegouDestino() == false && chegou == false && notificado == false) {
                             notificado = true;
                         }
@@ -931,6 +1094,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         makeRoute = new MakeRoute();
         String lang = "portuguese";
         makeRoute.drawRoute(mMap, MapsActivity.this, points, true, lang, true,Color.GREEN,"driving",true);
+
     }
 
     private void fetchAutocarros() {
@@ -1068,6 +1232,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (!paragens.isEmpty()) {
                             origem = paragensOg.get(0);
                             destino = paragensOg.get(paragensOg.size()-1);
+                            disponivel.setEnabled(false);
+                            indisponivel.setEnabled(true);
                             progressBar = (ProgressBar) findViewById(R.id.ProgressRegDevice);
                             snackbar= TSnackbar.make(progressBar,"Iniciou Serviço de Localização com sucesso",TSnackbar.LENGTH_LONG);
                             View snackBarView = snackbar.getView();
@@ -1131,6 +1297,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     snackBarView.setBackgroundColor(Color.parseColor("#ff21ab29")); // snackbar background color
                     snackbar.setActionTextColor(Color.parseColor("#FFFFEE19")); // snackbar action text color
                     snackbar.show();
+                    disponivel.setEnabled(false);
+                    indisponivel.setEnabled(true);
                     btnIniciar.setEnabled(false);
                     btnParar.setEnabled(true);
                     btnRedefinir.setEnabled(false);
@@ -1195,7 +1363,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 for (Associacao as : associacoes) {
                                     if (as.getCodAutocarro().equals(selectedAutocarro.getId())) {
                                         estaassociadoA = true;
-                                        System.out.println("AUTOCARRO EST}A ASSOCIADO>"+as.getCodAutocarro());
+                                        System.out.println("AUTOCARRO ESTA ASSOCIADO>"+as.getCodAutocarro());
                                         associacoaA = as;
                                     }
                                 }
@@ -1282,8 +1450,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             });
                     AlertDialog alert = builder.create();
                     alert.show();
-
-
                 }
             }
             progressDialog.dismiss();
@@ -1319,8 +1485,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             txtKmpercorridos.setText("Distância percorrida: a determinar");
                             txtKmapercorrer.setText("Distância a percorrer: a determinar");
                             txtChegoudestino.setText("Chegou ao destino: a determinar");
-                            txtTempoEstimado.setText("Tempo Estimado de Chegada a ser determinado ");
+                            txtTempoEstimado.setText("Tempo Estimado de Chegada a paragem: a determinar ");
+                            txtDisponibilidade.setText("Disponibilidade: a determinar");
+                            txtVelocidadedoautocarro.setText("Velocidade: a determinar");
                             txtProximaParageminfo.setText("Próxima Paragem: a determinar");
+                            txtdataHora.setText("Data e Hora: a determinar");
                             btnAssociar = (Button) findViewById(R.id.btnAssociar);
                             btnAssociar.setEnabled(true);
                             firstTime = true;
@@ -1330,6 +1499,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             selecionouOrigem = false;
                             selecionouDestino = false;
                             selecionouDestino = false;
+                            disponivel.setEnabled(false);
+                            indisponivel.setEnabled(false);
                             swtEspecificar = (Switch) findViewById(R.id.swtEspecificar);
                             swtEspecificar.setChecked(false);
                             btnRedefinir.setEnabled(false);
@@ -1382,7 +1553,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             txtKmapercorrer.setText("Distância a percorrer: a determinar");
                             txtChegoudestino.setText("Chegou ao destino: a determinar");
                             txtProximaParageminfo.setText("Próxima Paragem: a determinar");
-                            txtTempoEstimado.setText("Tempo Estimado de Chegada a ser determinado ");
+                            txtTempoEstimado.setText("Tempo Estimado de Chegada a paragem: a determinar ");
+                            txtDisponibilidade.setText("Disponibilidade: a determinar");
+                            txtVelocidadedoautocarro.setText("Velocidade: a determinar");
+                            txtdataHora.setText("Data e Hora: a determinar");
                             firstTime = true;
                             origem = null;
                             destino = null;
@@ -1390,6 +1564,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             selecionouOrigem = false;
                             selecionouDestino = false;
                             selecionouDestino = false;
+                            disponivel.setEnabled(false);
+                            indisponivel.setEnabled(false);
                             swtEspecificar.setChecked(false);
                             btnRedefinir.setEnabled(false);
                             spAutocarros.setAdapter(new ArrayAdapter<Autocarro>(MapsActivity.this, android.R.layout.simple_list_item_1, autocarros));
@@ -2046,14 +2222,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if(distanciaMaxima == null){
                 distanciaMaxima = CalculationByDistance(inicioParagem.getLatlng(), actualParagem.getLatlng());
             }
+
             vg = new Viagem();
             vg.setCod_rota(selectedRota.getId());
             vg.setId(getIMEI());
             vg.setCod_autocarro(selectedAutocarro.getId());
             vg.setDescricao(selectedAutocarro.getNome());
             vg.setVelocidade("40 km/h");
-            vg.setTempoEstChgada("a ser determinado no momento pelo sistema.");
+            vg.setTempoEstChgada("a determinar.");
             vg.setTempoReal(0.0);
+            vg.setDisponibilidade(disponibilidade);
+            Date finaldate = new Date();
+            SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
+            String datenc = DATE_FORMAT.format(finaldate);
+            vg.setDataHora(datenc);
+            infoDisponibilidade ="O "+ selectedAutocarro.getNome() +" está disponível. A Circular na Rota "+selectedRota.getName();
+            vg.setInfoDisponibilidade(infoDisponibilidade);
+            LibraryClass.getFirebase().child("Notificacoes").child(vg.getCod_rota()).setValue(notificacao);
             handler = new Handler();
             final long start = SystemClock.uptimeMillis();
             final long duration = 400000;
@@ -2070,6 +2255,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if (i < polyRoute.size()) {
                         vg.setLatitude(polyRoute.get(i).latitude);
                         vg.setLongitude(polyRoute.get(i).longitude);
+                        Date finaldate = new Date();
+                        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
+                        String datenc = DATE_FORMAT.format(finaldate);
+                        vg.setDataHora(datenc);
                         LatLng dest = new LatLng(polyRoute.get(i).latitude, polyRoute.get(i).longitude);
                         ArrayList<LatLng>pont = new ArrayList<LatLng>();
                         pont.add(inicioParagem.getLatlng());
@@ -2124,6 +2313,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     vg.setChegouDestino(true);
 
                             LibraryClass.getFirebase().child("Viagens").child(selectedAutocarro.getId()).setValue(vg);
+
                         }
                         LibraryClass.getFirebase().child("Viagens").child(selectedAutocarro.getId()).setValue(vg);
                         i++;
@@ -2135,6 +2325,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 handler.postDelayed(this, 1000);
                             }
                         }
+
                     } else {
                         vg.setChegouDestino(true);
                         emviagem = false;

@@ -68,6 +68,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:id="@+id/textView9" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -158,6 +159,33 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/spDestino"
                 android:spinnerMode="dropdown" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Alterar Disponibilidade"
+                android:background="#ffc"
+                android:id="@+id/textView2e4"
+                android:textSize="15dp" />
+
+            <GridLayout
+                xmlns:grid="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:columnCount="2"
+                >
+                <Button
+                    android:text="Indisponível"
+                    android:theme="@style/btnRed"
+                    android:id="@+id/btnIndisponivel" />
+                <Button
+                    android:text="Disponível"
+                    android:theme="@style/btngreen"
+                    android:id="@+id/btnDisponivel"
+                    android:layout_height="wrap_content" />
+            </GridLayout>
 
             <Button
                 android:layout_width="match_parent"
